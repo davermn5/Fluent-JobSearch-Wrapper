@@ -54,23 +54,29 @@
    */      
    public function filterJobsOnetCode( $parsed_output, $onetcode_arr){
     $matches = array();
-    $container_arr = $parsed_output['Results']['JobSearchResult'];
-    for($i=0; $i<count($container_arr); ++$i){
-     if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+    $container_arr = $parsed_output['Results'];
+    foreach($container_arr as $k1 => $v1){
+     if( ($k1 == 'JobSearchResult') && (count($v1) > 0) )
      {
-      $matches[] = $container_arr[$i];
+      for($i=0; $i<count($container_arr[$k1]); ++$i){
+       if( in_array($container_arr[$k1][$i]['OnetCode'], $onetcode_arr) )
+       {
+        $matches[] = $container_arr[$k1][$i];
+       }
+      } //end for..
      }
-    } //end for..
+    } 
     return $matches;  
    } //filterJobsOnetCode()..
    
   } //end Cbapi class..
   
    //Testing the public api..
-   /*
+  
+  /*
   $cbapi_A = new Cbapi();
-   $_key = '*****';
-   $_keyword = 'php';
+   $_key = 'WDT90G465HFJ8VC57QV9';
+   $_keyword = 'asdf';
    $_location = 'san diego';
    $_since_arr = array(1,3,7,30);
    $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[2] ); 
@@ -82,6 +88,6 @@
     $matches = array();
    $specified = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);
    print_r($specified);
-   */
+  */ 
   
 ?>
