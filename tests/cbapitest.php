@@ -3,7 +3,7 @@
  
  class CbapiTest extends PHPUnit_Framework_TestCase{
   protected $_cbapi = null;
-  protected $_key = 'WDTZ14P67NZKL453DBTN';
+  protected $_key = '******';
   protected $_keyword = 'php';
   protected $_location = 'san diego';
   protected $_since_arr = array(1,3,7,30);
