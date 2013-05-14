@@ -69,7 +69,7 @@
    //Testing the public api..
    /*
   $cbapi_A = new Cbapi();
-   $_key = 'WDTZ14P67NZKL453DBTN';
+   $_key = '*****';
    $_keyword = 'php';
    $_location = 'san diego';
    $_since_arr = array(1,3,7,30);
