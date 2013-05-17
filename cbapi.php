@@ -1,4 +1,5 @@
 <?php
+  require_once('includes/db_conn.php');
   class Cbapi{
    public function __construct(){}
    
@@ -48,40 +49,73 @@
    *   @param  array  $parsed_output    The haystack from which to search     
    *   @param  array  $onetcode_arr     A list of options specifying the onetcode to search for
    *   
-   *  @return array  $matches       Represents an array of matching jobs with their
-   *                                 relevant details               
+   *  @return array  $matches       Represents an array of matching jobs with their details, including
+   *                                 global details necessary for db insert later on..                 
    *
    */      
    public function filterJobsOnetCode( $parsed_output, $onetcode_arr){
     $matches = array();
-    $container_arr = $parsed_output['Results']['JobSearchResult'];
-    for($i=0; $i<count($container_arr); ++$i){
-     if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+    foreach($parsed_output as $k1 => $v1){
+     if( ($k1 != 'Results') && ($k1 != 'SearchMetaData') )
      {
-      $matches[] = $container_arr[$i];
+      $matches[$k1] = $v1;
      }
-    } //end for..
+     if($k1 == 'Results')
+     {
+      $container_arr = $v1['JobSearchResult'];
+      for($i=0; $i<count($container_arr); ++$i){
+       if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+       {
+        $matches[] = $container_arr[$i];
+       }
+      } //end for..
+     }
+     if($k1 == 'SearchMetaData')
+     {
+      $metadata_container_arr = $v1['SearchLocations']['SearchLocation'];
+      foreach( $metadata_container_arr as $k2 => $v2 ){
+       $matches[$k2] = $v2;
+      }
+     }
+    }
     return $matches;  
    } //filterJobsOnetCode()..
    
+   
+   //@return Object string Based on the given identifier
+   public function getJobDetails( $key, $jobdid, $identifier ) {
+	 	$url = "http://api.careerbuilder.com/v1/job?DeveloperKey=$key&DID=$jobdid";
+	 	$xml = simplexml_load_file($url);
+    
+    try{
+	 		$xml = simplexml_load_file($url);
+	 	}catch(Exception $e){
+	 		print_r($e);
+	 	}
+    
+    $output_obj = $xml->Job->$identifier;
+     return $output_obj;
+    
+   } //end getJobDetails()..
+   
   } //end Cbapi class..
   
-   //Testing the public api..
+  
    /*
+   //Testing the public api..
+  $db_columns = array(); 
   $cbapi_A = new Cbapi();
    $_key = 'WDTZ14P67NZKL453DBTN';
    $_keyword = 'php';
    $_location = 'san diego';
    $_since_arr = array(1,3,7,30);
    $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[2] ); 
-   
-    $temp_arr = array();                    
-    $parsed_output = $cbapi_A->mapToArray($rawResults);
+                       
+   $parsed_output = $cbapi_A->mapToArray($rawResults);
     
-    $onetcode_arr = array('15-1099.04', '15-1031.00');
-    $matches = array();
-   $specified = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);
+   $onetcode_arr = array('15-1099.04', '15-1031.00');
+   $specified = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);  
    print_r($specified);
    */
-  
+   
 ?>

@@ -1,0 +1,30 @@
+<?php
+
+ //db_conn.php
+ $db_server="localhost";  //server name
+ $db_user="root";		// user name
+ $db_password="jJ!1910jJ!1910";		//	user password
+ $db_database="crawler";	// database name
+
+
+ //Creating a data base connection
+ if( ($db_conn = mysql_connect($db_server, $db_user, $db_password)) === FALSE){
+  die( "Database connection failed:" . mysql_error() );
+ }
+ /*
+ elseif( ($db_conn = mysql_connect($db_server, $db_user, $db_password)) !== FALSE ){
+  echo 'successful db connection.</br>';
+ }
+ */
+ 
+	// Select a database to use
+ if( ($db_select = mysql_select_db($db_database, $db_conn) ) === FALSE ){
+  die("Database selection failed:" . mysql_error() );
+ }
+ /*
+ elseif( ($db_select = mysql_select_db($db_database, $db_conn) ) !== FALSE ){
+  echo 'sucessful db selection.</br>';
+ }
+ */
+
+?>
