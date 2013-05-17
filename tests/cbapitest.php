@@ -3,7 +3,7 @@
  
  class CbapiTest extends PHPUnit_Framework_TestCase{
   protected $_cbapi = null;
-  protected $_key = 'WDTZ14P67NZKL453DBTN';
+  protected $_key = 'WDT90G465HFJ8VC57QV9';
   protected $_keyword = 'php';
   protected $_location = 'san diego';
   protected $_since_arr = array(1,3,7,30);
@@ -53,9 +53,11 @@
     */       
     public function testFilterJobsOnetCode( array $parsed_output ){
      $this->assertInternalType('array', $parsed_output);
+     $this->assertNotNull($parsed_output);
       $this->assertInternalType('array', $this->_onetcode_arr);
       $onetcode_matches_arr = $this->_cbapi->filterJobsOnetCode( $parsed_output, $this->_onetcode_arr );
-      $this->assertInternalType('array', $onetcode_matches_arr);
+      $this->assertInternalType('array', $onetcode_matches_arr); 
+      
     }
   
  }
