@@ -3,8 +3,8 @@
  //db_conn.php
  $db_server="localhost";  //server name
  $db_user="root";		// user name
- $db_password="jJ!1910jJ!1910";		//	user password
- $db_database="crawler";	// database name
+ $db_password="xxxxxxx";		//	user password
+ $db_database="xxxxxxx";	// database name
 
 
  //Creating a data base connection
