@@ -10,9 +10,8 @@
    *    @param $keyword
    *    @param $location
    *    @param $since   
-   *   
-   *   @return SimpleXmlElement Object      
    *
+   *   @return SimpleXmlElement Object      
    */      
    public function getKeyKeywordLocationSinceRaw($key, $keyword, $location, $since){
     $url = "http://api.careerbuilder.com/V1/jobsearch?DeveloperKey=$key&Keywords=$keyword&Location=$location&PostedWithin=$since";
@@ -30,11 +29,9 @@
    *  Method  mapToArray()
    *  @Purpose Convert the SimpleXmlElement Object into an array format
    *           for easier (relatively) traversing..
-   *  
    *   @param  SimpleXmlElement Object  $rawResults  The object we wish to parse   
-   *
+   *      
    *  @return array  $parsed_arr  The arrayified format that is returned        
-   *
    */       
    public function mapToArray($rawResults){
     $parsed_arr = @json_decode(@json_encode($rawResults),1);
@@ -48,10 +45,9 @@
    *  @Purpose Search the haystack for jobs matching specific 'onetcode' inputs.. 
    *   @param  array  $parsed_output    The haystack from which to search     
    *   @param  array  $onetcode_arr     A list of options specifying the onetcode to search for
-   *   
+   *      
    *  @return array  $matches       Represents an array of matching jobs with their details, including
    *                                 global details necessary for db insert later on..                 
-   *
    */      
    public function filterJobsOnetCode( $parsed_output, $onetcode_arr){
     $matches = array();
@@ -82,21 +78,80 @@
    } //filterJobsOnetCode()..
    
    
-   //@return Object string Based on the given identifier
-   public function getJobDetails( $key, $jobdid, $identifier ) {
-	 	$url = "http://api.careerbuilder.com/v1/job?DeveloperKey=$key&DID=$jobdid";
-	 	$xml = simplexml_load_file($url);
+   /*
+   *  Method  getJobDetails()
+   *   @Purpose: The purpose of this method is to retrieve the 
+   *             job attributes which are located across different API 
+   *             response objects. So we make a call and return an 
+   *             array of objects (consisting of the drill-down job details 
+   *             for each job listed in $jobdid_arr).            
+   *   @param string  $key         The developer key provided
+   *   @param array   $jobdid_arr  An array consisting of generic job details
+   *   
+   *  @return  An array of SimpleXmlElement Objects  (each object has drill-down job details)       
+   */      
+   public function getJobDetails( $key, $jobdid_arr ) {
+    if( (is_array($jobdid_arr)) && (is_string($key)) )
+    {
+     $temp_arr = array();
+     foreach($jobdid_arr as $k1 => $v1)
+     {
+      if( is_numeric($k1) )
+      {
+       foreach($v1 as $k2 => $v2){
+        if($k2 == 'DID')
+        {
+         $url = "http://api.careerbuilder.com/v1/job?DeveloperKey=$key&DID=$v2";
+         $xml = simplexml_load_file($url); 
+        
+         try{
+	 		    $xml = simplexml_load_file($url);
+	 	     }catch(Exception $e){
+	 		    print_r($e);
+	 	     }
     
-    try{
-	 		$xml = simplexml_load_file($url);
-	 	}catch(Exception $e){
-	 		print_r($e);
-	 	}
-    
-    $output_obj = $xml->Job->$identifier;
-     return $output_obj;
+         $temp_arr[$k1] = $xml;
+        }
+       }
+      }
+     } //end top foreach..
+     return $temp_arr;  //An array of objects..
+    }
     
    } //end getJobDetails()..
+   
+   
+   /*
+   *  Method  performFinalMerge()
+   *   @Purpose:
+   *    @param  array  $jobDetails_arr          Represents the array to pluck specific
+   *                                            information from            (pluck from)   
+   *    @param  array  $onetcode_matches_arr    The existing array to stuff (turkey)
+   *    @param  array  $specificJobDetails_arr  The specific information we wish to pluck..    
+   *       
+   *   @return  array  $onetcode_matches_arr  An updated, more specific-like version of
+   *                                          the original argument                 
+   */      
+   public function performFinalMerge( $jobDetails_arr, $onetcode_matches_arr, $specificJobDetails_arr ){
+    for( $i=0; $i<count($jobDetails_arr); ++$i )
+    {
+     foreach($jobDetails_arr[$i] as $k1 => $v1){
+      if($k1 == 'Job')
+      {
+       foreach($v1 as $k2 => $v2){
+        for( $j=0; $j<count($specificJobDetails_arr); ++$j )
+        {
+         if( in_array($k2, $specificJobDetails_arr) )
+         {
+          $onetcode_matches_arr[$i][$k2] = $v2;
+         }
+        }
+       } 
+      }  //end if Job..
+     }  //end top  foreach..
+    }
+    return $onetcode_matches_arr;
+   }
    
   } //end Cbapi class..
   
@@ -109,13 +164,25 @@
    $_keyword = 'php';
    $_location = 'san diego';
    $_since_arr = array(1,3,7,30);
+   $_specificJobDetails_arr = array("BlankApplicationServiceURL", "LocationCity", "RelocationCovered");
    $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[2] ); 
                        
    $parsed_output = $cbapi_A->mapToArray($rawResults);
     
    $onetcode_arr = array('15-1099.04', '15-1031.00');
-   $specified = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);  
-   print_r($specified);
-   */
+   $specified_arr = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);  
+   //print_r($specified_arr);
+   
+   
+   $jobDetails_container = $cbapi_A->getJobDetails( $_key, $specified_arr ); 
+    $jobDetails_arr = $cbapi_A->mapToArray( $jobDetails_container );   
+    //print_r($jobDetails_arr);
+  
+  
+   //Now combine the $jobDetails_arr with our $specified array..
+    $onetcode_matches_arr = $cbapi_A->performFinalMerge( $jobDetails_arr, $specified_arr, $_specificJobDetails_arr );
+     print_r($onetcode_matches_arr);   
+    */
+    
    
 ?>

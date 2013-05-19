@@ -2,12 +2,9 @@
 
  //db_conn.php
  $db_server="localhost";  //server name
- $db_user="";		// user name
+ $db_user="";		   // user name
  $db_password="";		//	user password
  $db_database="";	// database name
- $db_user="root";		// user name
- $db_password="xxxxxxx";		//	user password
- $db_database="xxxxxxx";	// database name
 
 
  //Creating a data base connection

@@ -17,6 +17,21 @@
                             "LocationCity"
   );
   
+  protected $_jobdid_arr = array(
+                             0 => array(
+                                    'DID' => "J3H1VY687Q1TFP8ZWT9"
+                             ),
+                             
+                             1 => array(
+                                    'DID' => "J3J6NN654XQNPPV528C" 
+                             )
+  );
+  
+  protected $_onetcode_matches_arr  = array();
+  
+  protected $_specificJobDetails_arr = array("BlankApplicationServiceURL", "LocationCity", "RelocationCovered");
+  
+  
   public function __construct(){}
   
   public function setUp(){
@@ -64,20 +79,39 @@
       $this->assertInternalType('array', $this->_onetcode_arr);
       $onetcode_matches_arr = $this->_cbapi->filterJobsOnetCode( $parsed_output, $this->_onetcode_arr );
       $this->assertInternalType('array', $onetcode_matches_arr);
+      
+      $this->_onetcode_matches_arr = $onetcode_matches_arr;   //Set internally..
     }
     
     
-    public function testGetJobDetails(){
+    public function testGetJobDetails(){  
      //Test our inputs are proper before we invoke logic..
      $this->assertInternalType( 'string', $this->_key );
-     $this->assertInternalType( 'string', $this->_jobdid ) ;
-     $this->assertInternalType( 'array', $this->_identifier );
-     $this->assertContainsOnly( 'string', $this->_identifier );
+     $this->assertInternalType( 'array', $this->_jobdid_arr );  //Might need to update contents of $this->_jobdid_arr as they tend to expire..
+     
+     foreach($this->_jobdid_arr as $k1 => $v1){    //Foreach loop is for the test, not the actual method..
+      $this->assertInternalType( 'array', $v1 );
+      foreach($v1 as $k2 => $v2){
+       $this->assertInternalType( 'string', $v2 );
+      }
+     }
     
-     foreach($this->_identifier as $v1){
-      $state_or_relocation_or_application_or_city = $this->_cbapi->getJobDetails( $this->_key, $this->_jobdid, $v1 );
-      $this->assertInternalType('object', $state_or_relocation_or_application_or_city);  //@return Object string..
-     } 
+     $jobDetails_container = $this->_cbapi->getJobDetails( $this->_key, $this->_jobdid_arr );  //@jobDetails_arr (@return) is an array of objects..
+       $this->assertInternalType( 'array', $jobDetails_container ); 
+     return $jobDetails_container; 
+    }
+    
+    
+    /**
+     *  @depends testGetJobDetails
+     */         
+    public function testPerformFinalMerge( array $jobDetails_container ){ 
+     $jobDetails_arr = $this->_cbapi->mapToArray( $jobDetails_container );
+      $this->assertInternalType('array', $jobDetails_arr);
+      $this->assertInternalType('array', $this->_onetcode_matches_arr);
+      $this->assertInternalType('array', $this->_specificJobDetails_arr);
+     $finalMerge_arr = $this->_cbapi->performFinalMerge( $jobDetails_arr, $this->_onetcode_matches_arr, $this->_specificJobDetails_arr );
+      $this->assertInternalType('array', $finalMerge_arr);
     }
   
  }
