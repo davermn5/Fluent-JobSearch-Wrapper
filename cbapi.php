@@ -1,15 +1,65 @@
 <?php
+ 
+ /**
+ *
+ * Copyright (c) 2013 David Roman <davermn5@gmail.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * * Neither the name of David Roman nor the names of contributors
+ * may be used to endorse or promote products derived from this software
+ * without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER ORCONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author David Roman
+ * @license BSD License
+ */
+  
   require_once('includes/db_conn.php');
+  
+  /*
+  *  Background: Careerbuilder.com provides a basic API through
+  *              which access can be made via public authentication.  
+  *
+  *  Purpose:    A simple REST client which sits on top of the 
+  *              careerbuilder.com API.
+  *              
+  *  Helps to:   Abstract the API details for simplicity sake (see code below
+  *              the class itself), and for developers looking to 
+  *              create projects from scratch using careerbuilder.com          
+  *
+  */      
   class Cbapi{
    public function __construct(){}
+   
    
    /*
    *   Method:  getKeyKeywordLocationSinceRaw()
    *   @Purpose: Fetch raw results given a key, keyword, location and date   
-   *    @param $key
-   *    @param $keyword
-   *    @param $location
-   *    @param $since   
+   *    @param string    $key         The developer key provided
+   *    @param string    $keyword     The keyword to search for
+   *    @param string    $location    The location to search in
+   *    @param int       $since       Possible enum values are 1,3,7,30
    *
    *   @return SimpleXmlElement Object      
    */      
@@ -47,7 +97,7 @@
    *   @param  array  $onetcode_arr     A list of options specifying the onetcode to search for
    *      
    *  @return array  $matches       Represents an array of matching jobs with their details, including
-   *                                 global details necessary for db insert later on..                 
+   *                                 global details necessary for db insert later on                 
    */      
    public function filterJobsOnetCode( $parsed_output, $onetcode_arr){
     $matches = array();
@@ -84,7 +134,7 @@
    *             job attributes which are located across different API 
    *             response objects. So we make a call and return an 
    *             array of objects (consisting of the drill-down job details 
-   *             for each job listed in $jobdid_arr).            
+   *             for each job listed in $jobdid_arr)..            
    *   @param string  $key         The developer key provided
    *   @param array   $jobdid_arr  An array consisting of generic job details
    *   
@@ -123,11 +173,11 @@
    
    /*
    *  Method  performFinalMerge()
-   *   @Purpose:
+   *   @Purpose: Combine both arrays so we can return one final array prior to db insertion..
    *    @param  array  $jobDetails_arr          Represents the array to pluck specific
    *                                            information from            (pluck from)   
    *    @param  array  $onetcode_matches_arr    The existing array to stuff (turkey)
-   *    @param  array  $specificJobDetails_arr  The specific information we wish to pluck..    
+   *    @param  array  $specificJobDetails_arr  The specific information we wish to pluck    
    *       
    *   @return  array  $onetcode_matches_arr  An updated, more specific-like version of
    *                                          the original argument                 
@@ -151,23 +201,130 @@
      }  //end top  foreach..
     }
     return $onetcode_matches_arr;
-   }
+   } //end performFinalMerge()..
+   
+   
+   /*
+   *  Method  dbStuff()  (PROTOTYPE)
+   *   @Purpose  Is used by the main instruction set 
+   *             in order to insert our drill-down results
+   *             into the database..
+   *    @param  array  $onetcode_matches_arr  Represents the array to dissect
+   *                                          and insert its parts into the db                  
+   *   @return  void
+   *
+   */         
+   public function dbStuff( $onetcode_matches_arr ){
+    
+    $db_stuff_arr = array();
+    
+    foreach($onetcode_matches_arr as $gk1 => $gv1){
+     if(!is_numeric($gk1))
+     {
+      if($gk1 == 'TimeResponseSent')
+       $TimeResponseSent = time();
+      if($gk1 == 'City')
+       $City = $gv1;
+      if($gk1 == 'StateCode')
+       $StateCode = $gv1;
+     }
+    }
+    
+    
+    //Find the # of numeric indices..
+    $k = 0;
+    foreach($onetcode_matches_arr as $k1 => $v1){
+     if( is_numeric($k1) )
+      ++$k; 
+    }
+  
+   
+     for($i=0; $i<$k; ++$i)
+     {
+      foreach( $onetcode_matches_arr[$i] as $k1 => $v1 ){
+       if($k1 == 'Company')
+        {       
+         $Company = $v1;
+        }
+        if($k1 == 'DID')
+        {
+         $DID = $v1;
+        }
+        if($k1 == 'OnetCode')
+        {
+         $OnetCode = $v1;
+        }
+        if($k1 == 'ONetFriendlyTitle')
+        {
+         $ONetFriendlyTitle = $v1;
+        }
+        if($k1 == 'Distance')
+        {
+         $Distance = $v1;
+        }
+        if($k1 == 'EmploymentType')
+        {
+         $EmploymentType = $v1;
+        }
+        if($k1 == 'LocationLatitude')
+        {
+         $LocationLatitude = $v1;
+        }
+        if($k1 == 'LocationLongitude')
+        {
+         $LocationLongitude = $v1;
+        }
+        if($k1 == 'PostedDate')
+        {
+         $PostedDate = strtotime($v1);
+        }
+        if($k1 == 'JobTitle')
+        {
+         $JobTitle = $v1;
+        }
+        if($k1 == 'BlankApplicationServiceURL')
+        {
+         $BlankApplicationServiceURL = $v1;
+        }
+        if($k1 == 'LocationCity')
+        {
+         $LocationCity = $v1;
+        }
+        if($k1 == 'RelocationCovered')
+        {
+         $RelocationCovered = $v1;
+        }  
+      }
+       $query_sav = "INSERT INTO cbapi.listed_jobs
+                    (job_id, parent_city, state_fk, company, relocation, job_document_identifier, onet_code, oNet_friendly_title, distance, employment_type, blank_application_service_url, location_city, location_latitude, location_longitude, job_title, posted_date, time_response_sent )
+                     VALUES(NOT NULL, '" .$City. "', '" .$StateCode. "', '" .$Company. "', '" .$RelocationCovered. "', '" .$DID. "', '" .$OnetCode. "', '" .$ONetFriendlyTitle. "', '" .$Distance. "', '" .$EmploymentType. "', '" .$BlankApplicationServiceURL. "', '" .$LocationCity. "', " .$LocationLatitude. "," .$LocationLongitude. ",'" .$JobTitle. "'," .$PostedDate. "," .$TimeResponseSent. ")";
+       
+       
+       $rs_sav = mysql_query($query_sav);  
+        if(mysql_affected_rows() > 0){
+         echo '</br><b>Successful insertion to database</b>.</br></br>';
+        }
+                     
+     }
+    
+   }//end dbStuff() ..
    
   } //end Cbapi class..
   
   
-   /*
+   
    //Testing the public api..
   $db_columns = array(); 
   $cbapi_A = new Cbapi();
    $_key = 'WDTZ14P67NZKL453DBTN';
-   $_keyword = 'php';
-   $_location = 'san diego';
+   $_keyword = 'php';     //php
+   $_location = 'madison';
    $_since_arr = array(1,3,7,30);
    $_specificJobDetails_arr = array("BlankApplicationServiceURL", "LocationCity", "RelocationCovered");
-   $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[2] ); 
+   $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[3] ); 
                        
    $parsed_output = $cbapi_A->mapToArray($rawResults);
+   //print_r($parsed_output);
     
    $onetcode_arr = array('15-1099.04', '15-1031.00');
    $specified_arr = $cbapi_A->filterJobsOnetCode( $parsed_output, $onetcode_arr);  
@@ -178,11 +335,12 @@
     $jobDetails_arr = $cbapi_A->mapToArray( $jobDetails_container );   
     //print_r($jobDetails_arr);
   
-  
+    
    //Now combine the $jobDetails_arr with our $specified array..
     $onetcode_matches_arr = $cbapi_A->performFinalMerge( $jobDetails_arr, $specified_arr, $_specificJobDetails_arr );
-     print_r($onetcode_matches_arr);   
-    */
+     //print_r($onetcode_matches_arr);   
     
-   
+    
+    $cbapi_A->dbStuff( $onetcode_matches_arr ); 
+    
 ?>

@@ -5,6 +5,7 @@
   
    public $_mysqli = null;
    private $_token  = "";
+   private $_token  = "";
   
    public function __construct(){
     $mysqli = new mysqli('localhost', '', $this->_token, '');
