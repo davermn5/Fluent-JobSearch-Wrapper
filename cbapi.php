@@ -108,13 +108,30 @@
      }
      if($k1 == 'Results')
      {
-      $container_arr = $v1['JobSearchResult'];
-      for($i=0; $i<count($container_arr); ++$i){
-       if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
-       {
-        $matches[] = $container_arr[$i];
+       $container_arr = $v1['JobSearchResult'];
+       $plural = 0;
+       foreach( $container_arr as $knum => $vnum){  //Do we have multiple records, or just 1x? Finding out now..
+        if( is_numeric($knum) )
+        {
+         $plural = 1;
+        }  
        }
-      } //end for..
+       if($plural == 1)  //More than 1x record constitutes each record being wrapped in a parent numeric index..
+       {
+        for($i=0; $i<count($container_arr); ++$i){
+         if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+         {
+          $matches[] = $container_arr[$i];
+         }
+        } //end for..
+       }
+       elseif($plural == 0)   //If 1x record exists, careerbuilder will not add a parent numeric index (container)..                            
+       {
+        if( in_array($container_arr['OnetCode'], $onetcode_arr) )
+        {
+         $matches[] = $container_arr;
+        }
+       }
      }
      if($k1 == 'SearchMetaData')
      {
@@ -312,16 +329,16 @@
   } //end Cbapi class..
   
   
-   
+  /*
    //Testing the public api..
   $db_columns = array(); 
   $cbapi_A = new Cbapi();
    $_key = 'WDTZ14P67NZKL453DBTN';
    $_keyword = 'php';     //php
-   $_location = 'madison';
+   $_location = 'Fort Collins';
    $_since_arr = array(1,3,7,30);
    $_specificJobDetails_arr = array("BlankApplicationServiceURL", "LocationCity", "RelocationCovered");
-   $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[3] ); 
+   $rawResults = $cbapi_A->getKeyKeywordLocationSinceRaw( $_key, $_keyword, $_location, $_since_arr[2] ); 
                        
    $parsed_output = $cbapi_A->mapToArray($rawResults);
    //print_r($parsed_output);
@@ -342,5 +359,6 @@
     
     
     $cbapi_A->dbStuff( $onetcode_matches_arr ); 
+    */
     
 ?>
