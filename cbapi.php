@@ -107,7 +107,9 @@
       $matches[$k1] = $v1;
      }
      if($k1 == 'Results')
-     {
+     { 
+      if( count($v1) > 0 )
+      {
        $container_arr = $v1['JobSearchResult'];
        $plural = 0;
        foreach( $container_arr as $knum => $vnum){  //Do we have multiple records, or just 1x? Finding out now..
@@ -119,7 +121,14 @@
        if($plural == 1)  //More than 1x record constitutes each record being wrapped in a parent numeric index..
        {
         for($i=0; $i<count($container_arr); ++$i){
-         if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+         if( count($onetcode_arr) > 0 )
+         {
+          if( in_array($container_arr[$i]['OnetCode'], $onetcode_arr) )
+          {
+           $matches[] = $container_arr[$i];
+          }
+         }
+         elseif( count($onetcode_arr) < 1 ) //If onetcodes_arr was not filled out (ie empty)..
          {
           $matches[] = $container_arr[$i];
          }
@@ -132,7 +141,11 @@
          $matches[] = $container_arr;
         }
        }
-     }
+      }
+      else{
+       echo 'No results found for the given parameters. Please go back and try again.';
+      } 
+     } /////
      if($k1 == 'SearchMetaData')
      {
       $metadata_container_arr = $v1['SearchLocations']['SearchLocation'];
