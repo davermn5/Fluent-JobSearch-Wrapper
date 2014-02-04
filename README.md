@@ -1,10 +1,19 @@
-cbapi
-=====
-Wrapper API for Career Builder's Publicly available Job Search API
 
 Purpose
 =======
-To offer users the ability to upload job search results to a MySQL database for later analysis/retrieval.
+An automation tool which can help programming entrepreneurs (and other job-seekers) maintain job search results within a MySQL database.
+
+
+Use Case
+=========
+David wishes to perform multiple job searches which may require several hours of his personal time.
+
+Instead he clones this repository, thus automating the job search process much faster.
+
+He quickly configures and runs his program in no time. (The results are processed nightly and analyzed the following morning)
+
+Now he can spend more quality time doing things he actually loves.
+
 
 Installation
 ============
