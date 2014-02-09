@@ -1,27 +1,18 @@
 <?php
- //db_conn_mysqli.php
- 
-  class dbConnectionMySQLi{
-  
-   public $_mysqli = null;
-   private $_token  = "";
-   private $_token  = "";
-  
-   public function __construct(){
-    $mysqli = new mysqli('localhost', '', $this->_token, '');
-    if( mysqli_connect_error() ){
-     die( 'Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error() );
-    }
-    else{
-     $this->_mysqli = $mysqli;
-    }
-     
-   }
-   
-  } //end dbConnection class..
-  
- 
-
-  //Go ahead and place the  $mysqli->close();  inside of the actual main code..
-
+	class dbConnectionMySQLi
+	{
+		public function __construct(array $mysqli_options){
+			$mysqli = new mysqli($mysqli_options['db_server'],
+				$mysqli_options['db_user'],
+				$mysqli_options['db_password'],
+				$mysqli_options['db_database'],
+				$mysqli_options['db_port'],
+				$mysqli_options['db_socket']);
+			if (mysqli_connect_error()) {
+				die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+			} else {
+				return $mysqli;
+			}
+		}
+	}
 ?>

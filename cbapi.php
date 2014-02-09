@@ -35,7 +35,9 @@
 	 * @license BSD License
 	 */
 
-	require_once('includes/db_conn.php');
+	include('bootstrap.php');
+
+	die();
 
 	/*
 	  *  Background: Careerbuilder.com provides a basic API through
