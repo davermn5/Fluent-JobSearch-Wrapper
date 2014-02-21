@@ -35,9 +35,7 @@
 	 * @license BSD License
 	 */
 
-	include('bootstrap.php');
 
-	die();
 
 	/*
 	  *  Background: Careerbuilder.com provides a basic API through
