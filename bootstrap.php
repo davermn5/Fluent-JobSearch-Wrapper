@@ -1,6 +1,6 @@
 <?php
 
-	require_once('includes/configuration.php');
+	require_once('config/classes/config.class.php');
 
 	$module_options = array(
 
@@ -24,7 +24,8 @@
 
 	global $config;
 	try{
-		$config = new Configuration($module_options);
+		$config = new Config($module_options);
+		require_once('config/builder.class.php');
 	}catch(Exception $e){
-		echo 'A ' . get_class($e) . ' type of exception was thrown with the following message: ' . $e->getMessage();
+		echo 'Bootstrap: A ' . get_class($e) . ' type of exception was thrown with the following message: ' . $e->getMessage();
 	}

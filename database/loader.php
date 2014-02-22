@@ -5,9 +5,9 @@
 	 *  The default location of these files is in the 'sql' directory.
 	 *
 	 * @examples
-	 *  i.) php build_sql.php
+	 *  i.) php loader.php
 	 *   or
-	 *  ii.) open a browser and navigate to 'this_path/build_sql.php'
+	 *  ii.) open a browser and navigate to 'this_path/loader.php'
 	 *
 	 * @Verify_It_Worked
 	 *  i.) On the virtual machine, type in the following commands:

@@ -1,5 +1,5 @@
 <?php
-	require_once('module_signature.interface.php');
+	require_once('config/interfaces/module_signature.interface.php');
 
 	class CbapiModule implements IModuleSignature
 	{

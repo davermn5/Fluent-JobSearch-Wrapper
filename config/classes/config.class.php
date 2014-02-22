@@ -1,9 +1,9 @@
 <?php
 
-	require_once('module_mysqli.class.php');
-	require_once('module_cbapi.class.php');
+	require_once('config/modules/module_mysqli.class.php');
+	require_once('config/modules/module_cbapi.class.php');
 
-	class Configuration
+	class Config
 	{
 		public $mysqli = null;
 		public $cbapi = null;

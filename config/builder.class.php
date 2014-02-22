@@ -1,14 +1,12 @@
 <?php
 
-include('bootstrap.php');
-
-class ConfigBuilder
+class Builder
 {
 	private $config = null;
 	private $request_url = "http://api.careerbuilder.com/V1/jobsearch?DeveloperKey=";
 	private $request_url_built = "";
 
-	public function __construct(Configuration $config){
+	public function __construct(Config $config){
 		$this->config = $config;
 		$this->initRequestUrl();
 	}
@@ -53,6 +51,3 @@ class ConfigBuilder
 		return $currentState;
 	}
 }
-
-$config_builder = new ConfigBuilder($config); //Defines how the built-up url string looks.
-echo $config_builder->last('day')->keyword('php')->location('denver')->initialize(); //Gives us the string.
