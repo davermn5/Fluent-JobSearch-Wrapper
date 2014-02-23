@@ -7,7 +7,7 @@ To provide a simple, fluent-interface design pattern with minimal(call-able) lin
 Features
 ========
 De-coupled architecture creates flexibility with other applications.
-Optional filters (modules) get you only the data you tell it to.
+Optional filters ( modules ) get you only the data you tell it to.
 
 Use-Cases
 =========
