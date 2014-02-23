@@ -1,18 +1,19 @@
 <?php
 
-class CbapiHelper
+require_once('application/interfaces/helper_signature.interface.php');
+
+class CbapiHelper implements IHelperSignature
 {
 	public $model = null;
 	public $request_url;
 
-	public function __construct( CbapiModel $model, $request_url ){
+	public function __construct( IHelperSignature $model ){
 		$this->model = $model;
-		$this->request_url = $request_url;
 	}
 
-	public function getResponse(){
+	public function getResponse($request_url, $returnType){
 		try{
-			return $this->model->getResponse($this->request_url, 'array');
+			return $this->model->getResponse($request_url, $returnType);
 		}catch(UnexpectedValueException $e){
 			$this->showErrorMessage($e);
 		}

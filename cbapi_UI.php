@@ -9,6 +9,6 @@
 
 	$request_url = $config_builder->last('day')->keyword('php')->location('denver')->initialize();
 
-	$cbapi_helper = new CbapiHelper( new CbapiModel(), $request_url);
+	$cbapi_helper = new CbapiHelper( new CbapiModel() );
 
-	echo '<pre>' . print_r( $cbapi_helper->getResponse() ) . '</pre>';
+	echo '<pre>' . print_r( $cbapi_helper->getResponse($request_url, 'array') ) . '</pre>';

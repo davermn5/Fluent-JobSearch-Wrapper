@@ -1,6 +1,8 @@
 <?php
 
-class CbapiModel
+require_once('application/interfaces/helper_signature.interface.php');
+
+class CbapiModel implements IHelperSignature
 {
 	public function getResponse($url, $returnType = ''){
 		$responseXmlObj = simplexml_load_file($url);
