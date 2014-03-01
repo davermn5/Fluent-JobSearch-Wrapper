@@ -2,8 +2,23 @@
 
 	require_once('application/interfaces/helper_signature.interface.php');
 
+	/**
+	 * The purpose of this class is to act as the main protocol for invoking
+	 *  lower-level business logic for handling the response passed back from
+	 *  the career builder api.
+	 */
 	class CbapiModel implements IHelperSignature
 	{
+		/**
+		 * Gets the response back from the career builder api, and then performs
+		 *  additional processing as necessary.
+		 *
+		 * @param string $url The url to send to the careerbuilder api
+		 * @param string $returnType Possible values are 'array' or defaults to ''(empty string)
+		 *
+		 * @return Returns either an array or a SimpleXMLElement object depending upon which return type is specified
+		 * @throws UnexpectedValueException
+		 */
 		public function getResponse($url, $returnType = '')
 		{
 			$responseXmlObj = simplexml_load_file($url);
