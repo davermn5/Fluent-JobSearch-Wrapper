@@ -1,6 +1,7 @@
 <?php
 
 	require_once('application/interfaces/helper_signature.interface.php');
+	require_once('application/models/business_logic/parser_model.class.php');
 
 	/**
 	 * The purpose of this class is to act as the main protocol for invoking

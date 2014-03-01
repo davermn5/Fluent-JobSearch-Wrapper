@@ -3,7 +3,6 @@
 	include('bootstrap.php');
 	require_once('application/helpers/cbapi_helper.class.php');
 	require_once('application/models/cbapi_model.class.php');
-	require_once('application/models/parser_model.class.php');
 
 	$config_builder = new Builder($config);
 
