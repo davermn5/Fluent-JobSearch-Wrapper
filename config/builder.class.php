@@ -83,7 +83,7 @@
 		/**
 		 * Limits all matching results to the specified time frame
 		 *
-		 * @param string $timeFrame The time frame to choose from
+		 * @param string $timeFrame        The time frame to choose from
 		 * @param string $defaultTimeFrame An optional default time frame
 		 *
 		 * @examples:
