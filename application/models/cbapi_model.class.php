@@ -14,20 +14,21 @@
 		 * Gets the response back from the career builder api, and then performs
 		 *  additional processing as necessary.
 		 *
-		 * @param string $url The url to send to the careerbuilder api
+		 * @param string $url        The url to send to the careerbuilder api
 		 * @param string $returnType Possible values are 'array' or defaults to ''(empty string)
 		 *
 		 * @return Returns either an array or a SimpleXMLElement object depending upon which return type is specified
 		 * @throws UnexpectedValueException
 		 */
-		public function getResponse($url, $returnType = '')
-		{
+		public function getResponse($url, $returnType = '') {
 			$responseXmlObj = simplexml_load_file($url);
-			if(($responseXmlObj instanceof SimpleXMLElement) !== true){
+			if(($responseXmlObj instanceof SimpleXMLElement) !== true)
+			{
 				throw new UnexpectedValueException('The response did not return a SimpleXMLElement object.');
 			}else{
 				$returnType = strtolower($returnType);
-				switch ($returnType) {
+				switch ($returnType)
+				{
 					case 'array' :
 						$parser_model = new ParserModel();
 
