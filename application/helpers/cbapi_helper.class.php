@@ -20,8 +20,7 @@
 		 *
 		 * @param IHelperSignature $model
 		 */
-		public function __construct(IHelperSignature $model)
-		{
+		public function __construct(IHelperSignature $model) {
 			$this->model = $model;
 		}
 
@@ -36,8 +35,7 @@
 		 *
 		 * @catches An UnexpectedValueException
 		 */
-		public function getResponse($request_url, $returnType)
-		{
+		public function getResponse($request_url, $returnType) {
 			try {
 				return $this->model->getResponse($request_url, $returnType);
 			} catch (UnexpectedValueException $e) {
@@ -48,11 +46,11 @@
 
 		/**
 		 * Shows the error message for a given exception
+		 *
 		 * @param $e
 		 */
-		private function showErrorMessage($e)
-		{
-			echo 'A ' . get_class($e) . ' type of exception was thrown with the following message: ' . $e->getMessage() . '</br></br>StackTrace:</br>'
-				. $e->getTraceAsString();
+		private function showErrorMessage($e) {
+			echo 'A ' . get_class($e) . ' type of exception was thrown with the following message: ' .
+				$e->getMessage() . '</br></br>StackTrace:</br>' . $e->getTraceAsString();
 		}
 	}
