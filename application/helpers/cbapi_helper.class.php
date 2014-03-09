@@ -45,6 +45,24 @@
 
 
 		/**
+		 * Applies any filters to the API response set, therefore limiting the results we get back
+		 *
+		 * @param mixed $haystack    The array or object data-type which represents the data response from the API
+		 * @param array $filters     An array of filter(s) to apply to the haystack
+		 *
+		 * @return mixed Returns either an array or object upon success
+		 */
+		public function applyFilters($haystack, $filters) {
+			try {
+				if(count($filters) > 0)
+					return $this->model->applyFilters($haystack, $filters);
+			} catch (UnexpectedValueException $e) {
+				$this->showErrorMessage($e);
+			}
+		}
+
+
+		/**
 		 * Shows the error message for a given exception
 		 *
 		 * @param $e

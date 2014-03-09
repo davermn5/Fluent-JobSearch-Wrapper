@@ -7,4 +7,5 @@
 	interface IHelperSignature
 	{
 		public function getResponse($request_url, $returnType);
+		public function applyFilters($haystack, $filters);
 	}

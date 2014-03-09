@@ -2,6 +2,8 @@
 
 	require_once('config/classes/config.class.php');
 
+	//TODO-davermn5 : Create 'showColumns' options from inside the bootstrap file.
+
 	$module_options = array(
 
 		'mysqli_options' => array(
