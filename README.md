@@ -11,10 +11,10 @@ Optional filters ( modules ) get you only the data you tell it to.
 
 Use-Cases
 =========
-Supplementing business intelligence dashboards.
-Automating the job search process much faster.
-Analyzing job trends in different states/cities.
-Knowing where the jobs are at any given moment.
+- Supplementing business intelligence dashboards.
+- Automating the job search process much faster.
+- Analyzing job trends in different states/cities.
+- Knowing where the jobs are at any given moment.
 
 Installation & Getting Started
 ===============================
